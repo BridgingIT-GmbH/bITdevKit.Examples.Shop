@@ -37,6 +37,7 @@
     <PackageReference Include="BridgingIT.DevKit.Presentation.Web" />
     <PackageReference Include="BridgingIT.DevKit.Presentation.Serilog" />
     <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" />
+    <PackageReference Include="BridgingIT.DevKit.Presentation.Web.HealthChecks" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
