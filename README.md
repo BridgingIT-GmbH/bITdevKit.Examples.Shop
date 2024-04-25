@@ -1,3 +1,6 @@
+![bITDevKit](bitDevKit_logo.png)
+=====================================
+
 # Architecture overview
 
 > An application built using .NET 8 and following a Domain-Driven Design approach, that is structurally divided into modular components, but still operates as a single monolithic application.
