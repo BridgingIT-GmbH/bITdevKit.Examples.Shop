@@ -1,0 +1,96 @@
+﻿@inject IStringLocalizer<MainLayout> localizer
+
+<MudAppBar Elevation="25">
+    @*<MudIcon Icon="@AppIcons.Logo" Size="Size.Large" ViewBox="0 0 500 500" />*@
+    @*<MudText Typo="Typo.h6" Class="ml-4">Acme Shop</MudText>*@
+    <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+        <MudIcon Icon="@AppIcons.Logo" Color="@(isDarkMode ? Color.Primary : Color.Surface)" Size="Size.Medium" ViewBox="0 0 300 100" Style="width: 180px; height: 100%; padding-top: 7px;" />
+    </MudHidden>
+    <MudToolBar DisableGutters="true">
+        <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@((e) => DrawerToggle())" Class="ml-3" />
+    </MudToolBar>
+    <MudSpacer />
+    <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+        <MudDivider Vertical="true" FlexItem="true" DividerType="DividerType.Middle" Class="mx-4 my-5" />
+        <MudMenu EndIcon="@Icons.Material.Filled.KeyboardArrowDown" Label="@localizer["Support"]" Color="Color.Inherit" Dense="true" TransformOrigin="Origin.BottomCenter">
+            <MudText Typo="Typo.body2" Class="px-4 py-2"><b>@localizer["Community"]</b></MudText>
+            <MudMenuItem Href="https://www.facebook.com/todo" Target="_blank">@localizer["Facebook Page"]</MudMenuItem>
+            <MudMenuItem Href="https://www.linkedin.com/in/todo/" Target="_blank">LinkedIn</MudMenuItem>
+            <MudText Typo="Typo.body2" Class="px-4 py-2"><b>@localizer["Resources"]</b></MudText>
+            <MudMenuItem Href="@appConfiguration.Settings.GetValueOrDefault("LogServerUrl")?.ToString()" Target="_blank">@localizer["Logs"]</MudMenuItem>
+            <MudMenuItem Href="@appConfiguration.Settings.GetValueOrDefault("TraceServerUrl")?.ToString()" Target="_blank">@localizer["Traces"]</MudMenuItem>
+            <MudMenuItem Href="@appConfiguration.Settings.GetValueOrDefault("MessageServerUrl")?.ToString()" Target="_blank">@localizer["Messages"]</MudMenuItem>
+            <MudMenuItem Href="@appConfiguration.Settings.GetValueOrDefault("SqlServerUrl")?.ToString()" Target="_blank">@localizer["Databases"]</MudMenuItem>
+            <MudMenuItem Href="@appConfiguration.Settings.GetValueOrDefault("MailServerUrl")?.ToString()" Target="_blank">@localizer["Mails"]</MudMenuItem>
+            <MudMenuItem Href="/swagger/index.html" Target="_blank">@localizer["API Documentation"]</MudMenuItem>
+            <MudMenuItem Href="@appConfiguration.Settings.GetValueOrDefault("ArchitectureDiagramsServerUrl")?.ToString()" Target="_blank">@localizer["Architecture Diagrams"]</MudMenuItem>
+            <MudMenuItem Href="/health-ui" Target="_blank">@localizer["System Health"]</MudMenuItem>
+        </MudMenu>
+        @if (appConfiguration.EnableLanguageToggle)
+        {
+            <LanguageSelector />
+        }
+        @if (appConfiguration.EnableDarkModeToggle)
+        {
+            <MudTooltip Text="@localizer["Toggle Dark Mode"]">
+                <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => ToggleDarkMode())" />
+            </MudTooltip>
+        }
+        <MudTooltip Text="@localizer["Fork Repository"]">
+            <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/vip32" Target="_blank" />
+        </MudTooltip>
+    </MudHidden>
+    <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+        <LanguageSelector />
+        <MudMenu Icon="@Icons.Material.Filled.Settings" Color="Color.Inherit" Dense="true" TransformOrigin="Origin.CenterRight">
+            <div class="px-2">
+                @if (appConfiguration.EnableDarkModeToggle)
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => ToggleDarkMode())" />
+                }
+                <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/vip32" Target="_blank" />
+            </div>
+            <MudText Typo="Typo.body2" Class="px-4 py-2"><b>@localizer["Community"]</b></MudText>
+            <MudMenuItem Href="https://www.facebook.com/todo" Target="_blank">@localizer["Facebook Page"]</MudMenuItem>
+            <MudMenuItem Href="https://www.linkedin.com/in/todo/" Target="_blank">LinkedIn</MudMenuItem>
+            <MudText Typo="Typo.body2" Class="px-4 py-2"><b>@localizer["Resources"]</b></MudText>
+            <MudMenuItem Href="https://mudblazor.com/getting-started/installation" Target="_blank">@localizer["MudBlazor Documentation"]</MudMenuItem>
+        </MudMenu>
+    </MudHidden>
+    <MudMenu TransformOrigin="Origin.BottomRight" Dense="true" Class="mt-1 ml-4">
+        <ActivatorContent>
+            @if (string.IsNullOrEmpty(ImageDataUrl))
+            {
+                <MudAvatar Color="Color.Secondary">@FirstLetterOfName</MudAvatar>
+            }
+            else
+            {
+                <MudAvatar Style="height:50px; width:50px;">
+                    <MudImage Src="@ImageDataUrl"></MudImage>
+                </MudAvatar>
+            }
+        </ActivatorContent>
+        <ChildContent>
+            <global::Modules.Identity.Presentation.Web.Client.Components.UserCard Class="mt-n2" />
+            <MudDivider Class="mb-2" />
+            <MudListItem Text="@localizer["Account"]" Href="/account" Icon="@Icons.Material.Outlined.Person" />
+            <MudListItem Text="@localizer["Logout"]" Icon="@Icons.Material.Filled.Logout" OnClick="Logout" />
+        </ChildContent>
+    </MudMenu>
+</MudAppBar>
+<MudDrawer @bind-Open="drawerOpen" Elevation="25" ClipMode="DrawerClipMode.Always">
+    <NavMenu />
+    <AppVersion />
+</MudDrawer>
+<MudMainContent>
+    <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+        <ErrorBoundary @ref="errorBoundary">
+            <ChildContent>
+                @ChildContent
+            </ChildContent>
+            <ErrorContent>
+                <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" ContentAlignment="HorizontalAlignment.Center">Sorry about that, something seems to have gone wrong.</MudAlert>
+            </ErrorContent>
+        </ErrorBoundary>
+    </MudContainer>
+</MudMainContent>

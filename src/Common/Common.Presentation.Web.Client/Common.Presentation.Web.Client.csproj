@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Common.Presentation.Web.Client</AssemblyName>
+    <RootNamespace>Common.Presentation.Web.Client</RootNamespace>
+    <!--<Nullable>enable</Nullable>-->
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BlazorApplicationInsights" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
+    <PackageReference Include="BridgingIT.DevKit.Presentation.Web.Client" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BridgingIT.DevKit.Common.Extensions" />
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
+    <PackageReference Include="Microsoft.Extensions.Localization" />
+    <PackageReference Include="MudBlazor" />
+    <PackageReference Include="Blazored.LocalStorage" />
+    <PackageReference Include="Blazored.FluentValidation" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Abstractions\Common.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

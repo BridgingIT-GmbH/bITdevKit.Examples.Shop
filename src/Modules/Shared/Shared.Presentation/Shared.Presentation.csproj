@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ModuleName>Shared</ModuleName>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Modules.$(ModuleName).Presentation</AssemblyName>
+    <RootNamespace>Modules.$(ModuleName).Presentation</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!--<Nullable>enable</Nullable>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" />
+    <PackageReference Include="BridgingIT.DevKit.Application.Entities.Messaging" />
+    <PackageReference Include="BridgingIT.DevKit.Common.Caching" />
+    <PackageReference Include="BridgingIT.DevKit.Common.Extensions.Web" />
+    <PackageReference Include="BridgingIT.DevKit.Common.Modules" />
+    <PackageReference Include="BridgingIT.DevKit.Infrastructure.Pulsar" />
+    <PackageReference Include="BridgingIT.DevKit.Infrastructure.RabbitMQ" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\$(ModuleName).Application\$(ModuleName).Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\$(ModuleName).appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="..\$(ModuleName).appsettings.*.json">
+      <DependentUpon>..\$(ModuleName).appsettings.json</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

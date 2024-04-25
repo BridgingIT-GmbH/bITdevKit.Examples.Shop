@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ModuleName>Ordering</ModuleName>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Modules.$(ModuleName).Tests.Integration</AssemblyName>
+    <RootNamespace>Modules.$(ModuleName).Tests.Integration</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!--<Nullable>enable</Nullable>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="BridgingIT.DevKit.Common" />
+    <Using Include="NSubstitute" />
+    <Using Include="Shouldly" />
+    <Using Include="Xunit" />
+    <Using Include="Xunit.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BridgingIT.DevKit.Common.Utilities.Xunit" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="BenchmarkDotNet" />
+    <PackageReference Include="FluentAssertions.Web" />
+    <PackageReference Include="NBuilder" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Presentation.Web\Presentation.Web.csproj" />
+    <ProjectReference Include="..\$(ModuleName).Application\$(ModuleName).Application.csproj" />
+    <ProjectReference Include="..\$(ModuleName).Domain\$(ModuleName).Domain.csproj" />
+    <ProjectReference Include="..\$(ModuleName).Infrastructure\$(ModuleName).Infrastructure.csproj" />
+    <ProjectReference Include="..\$(ModuleName).Presentation\$(ModuleName).Presentation.csproj" />
+  </ItemGroup>
+
+</Project>

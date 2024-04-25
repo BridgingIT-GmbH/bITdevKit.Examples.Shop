@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ModuleName>Catalog</ModuleName>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Modules.$(ModuleName).Domain</AssemblyName>
+    <RootNamespace>Modules.$(ModuleName).Domain</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!--<Nullable>enable</Nullable>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BridgingIT.DevKit.Domain.Mediator" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shopping\Shopping.Domain\Shopping.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

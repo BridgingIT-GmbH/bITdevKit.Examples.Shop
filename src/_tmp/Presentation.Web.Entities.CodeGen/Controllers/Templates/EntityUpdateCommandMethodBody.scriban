@@ -1,0 +1,47 @@
+{{ if policy != "" }}
+[Authorize(Policy = "{{ policy }}")]
+{{ else if authorize == true }}
+[Authorize]
+{{ end }}
+[HttpPut("{id}")]
+[ProducesResponseType((int)HttpStatusCode.OK)]
+[ProducesResponseType((int)HttpStatusCode.NotFound)]
+[ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+[ProducesResponseType(typeof(ValidationProblemDetails), (int)HttpStatusCode.BadRequest)]
+[ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.InternalServerError)]
+{{ if module != "" }}
+[OpenApiTag("{{ module | string.downcase }}/{{ entity_name | string.split "." | array.last | pluralize | string.downcase }}")]
+{{ else }}
+[OpenApiTag("{{ entity_name | string.split "." | array.last | pluralize | string.downcase }}")]
+{{ end }}
+{{ if parameters.size > 0 }}
+public async Task<ActionResult<Result<EntityUpdatedCommandResult>>> {{ action_name }}(
+    string id,
+    {{ entity_name }} entity,
+    {{- for param in parameters -}}
+        {{ param.type }} {{ param.name | string.downcase }} = default{{for.last ? "" : ","}}
+    {{~ end ~}})
+{{ else }}
+public async Task<ActionResult<Result<EntityUpdatedCommandResult>>> {{ action_name }}(
+    string id,
+    {{ entity_name }} entity)
+{{ end }}
+{
+    if (id != entity?.Id.ToString())
+    {
+        this.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+        return null;
+    }
+
+    var command = new {{ request_name }}(entity, this.HttpContext.User?.Identity?.Name);
+{{ for param in parameters }}
+    command.{{ param.name }} = {{ param.name | string.downcase }};
+{{~ end ~}}
+
+    var response = await this.requestMediator.Send(command).AnyContext();
+    this.Response.Headers.Add("Location", $"/api/v" + this.version + ModuleSlug + "/{{ entity_name | string.split "." | array.last | string.downcase }}/{response.Result.Value.EntityId}");
+    this.Response.Headers.Add("X-Entity-Id", response.Result.Value.EntityId);
+    this.Response.StatusCode = (int)HttpStatusCode.OK;
+
+    return this.Ok(response.Result);
+}

@@ -1,0 +1,36 @@
+{{ if policy != "" }}
+[Authorize(Policy = "{{ policy }}")]
+{{ else if authorize == true }}
+[Authorize]
+{{ end }}
+[HttpGet("{id}")]
+[ProducesResponseType((int)HttpStatusCode.OK)]
+[ProducesResponseType((int)HttpStatusCode.NotFound)]
+[ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+[ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.InternalServerError)]
+{{ if module != "" }}
+[OpenApiTag("{{ module | string.downcase }}/{{ entity_name | string.split "." | array.last | pluralize | string.downcase }}")]
+{{ else }}
+[OpenApiTag("{{ entity_name | string.split "." | array.last | pluralize | string.downcase }}")]
+{{ end }}
+{{ if parameters.size > 0 }}
+public async Task<ActionResult<Result<{{ entity_name }}>>> {{ action_name }}(
+    string id,
+    {{- for param in parameters -}}
+        {{ param.type }} {{ param.name | string.downcase }} = default{{for.last ? "" : ","}}
+    {{~ end ~}})
+{{ else }}
+public async Task<ActionResult<Result<{{ entity_name }}>>> {{ action_name }}(
+    string id)
+{{ end }}
+{
+    var query = new {{ request_name }}(id);
+{{ for param in parameters }}
+    query.{{ param.name }} = {{ param.name | string.downcase }};
+{{~ end ~}}
+
+    var response = await this.requestMediator.Send(query).AnyContext();
+
+    return response.Result == null
+        ? this.NotFound() : this.Ok(response.Result);
+}

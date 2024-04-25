@@ -1,0 +1,10 @@
+{
+  "Modules": {
+    "Shopping": {
+      "ConnectionStrings": {
+        "SqlServer": "Server=127.0.0.1,14337;Database=bitdevkit_shop;User=sa;Password=Abcd1234!;Trusted_Connection=false;encrypt=false",
+        "StorageAccount": "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;" // https://github.com/Azure/Azurite#connection-strings
+      }
+    }
+  }
+}

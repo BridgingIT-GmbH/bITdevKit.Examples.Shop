@@ -1,0 +1,13 @@
+{
+  "Modules": {
+    "Catalog": {
+      "Enabled": true,
+      "BrocadeUrl": "https://www.brocade.io/",
+      "BrocadeApiKey": "4db48b71323ab9898d1074152c0c42b1",
+      "DummyJsonProductsUrl": "https://raw.githubusercontent.com/Ovi/DummyJSON/master/src/data/products.json",
+      "ConnectionStrings": {
+        "SqlServer": "Server=127.0.0.1,14337;Database=bitdevkit_shop;User=sa;Password=Abcd1234!;Trusted_Connection=false;encrypt=false"
+      }
+    }
+  }
+}

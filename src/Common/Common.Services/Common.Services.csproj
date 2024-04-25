@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Common.Services</AssemblyName>
+    <RootNamespace>Common.Services</RootNamespace>
+    <!--<Nullable>enable</Nullable>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BridgingIT.DevKit.Common.Abstractions" />
+    <PackageReference Include="BridgingIT.DevKit.Common.Extensions" />
+    <PackageReference Include="BridgingIT.DevKit.Common.Options" />
+    <PackageReference Include="EPPlus" /> <!--EPPlus 5 and up is licensed under the Polyform Noncommercial 1.0.0 license. https://www.epplussoftware.com/en/LicenseOverview-->
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="MailKit" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="MimeKit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\_tmp\Application.Abstractions\Application.Abstractions.csproj" />
+    <ProjectReference Include="..\Common.Abstractions\Common.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

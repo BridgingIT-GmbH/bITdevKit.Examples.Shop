@@ -1,0 +1,1117 @@
+openapi: 3.0.0
+info:
+  title: Catalog API
+  version: v1
+servers:
+  - url: https://localhost:5001
+
+paths:
+  /api/catalog/echo:
+    summary: This resource represents an echo in the module
+    get:
+      summary: Gets an echo
+      tags:
+        - catalog/dummy
+      operationId: Catalog_Echo-Get
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultResponseModel'
+              example:
+                messages:
+                  - echo
+                succeeded: true
+
+  # Brands ======================================================
+  /api/catalog/brands:
+    get:
+      tags:
+        - catalog/brands
+      operationId: Catalog_Brand-GetAll
+      parameters:
+        - name: pageNumber
+          in: query
+          schema:
+            type: integer
+            format: int32
+          x-position: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            format: int32
+          x-position: 2
+        - name: searchString
+          in: query
+          schema:
+            type: string
+            nullable: true
+          x-position: 3
+        - name: orderBy
+          in: query
+          schema:
+            type: string
+            nullable: true
+          x-position: 4
+        - name: includeDeleted
+          in: query
+          schema:
+            type: boolean
+            default: false
+          x-position: 5
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedResultOfBrandsResponseModel'
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+      security:
+        - JWT: []
+    post:
+      tags:
+        - catalog/brands
+      operationId: Catalog_Brand-Post
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandModel'
+        required: true
+        x-position: 1
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfEntityCreatedResponseModel'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+      security:
+        - JWT: []
+  /api/catalog/brands/{id}:
+    get:
+      tags:
+        - catalog/brands
+      operationId: Catalog_Brand-GetById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          x-position: 1
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfBrandResponseModel'
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+      security:
+        - JWT: []
+    put:
+      tags:
+        - catalog/brands
+      operationId: Catalog_Brand-Put
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          x-position: 1
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandModel'
+        required: true
+        x-position: 2
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfEntityUpdatedResponseModel'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfEntityUpdatedResponseModel'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+      security:
+        - JWT: []
+    delete:
+      tags:
+        - catalog/brands
+      operationId: Catalog_Brand-Delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          x-position: 1
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfEntityDeletedResponseModel'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+      security:
+        - JWT: []
+  /api/catalog/brands/export:
+    get:
+      tags:
+        - catalog/brands
+      operationId: Catalog_Brand-Export
+      parameters:
+        - name: searchString
+          in: query
+          schema:
+            type: string
+            default: ''
+            nullable: true
+          x-position: 1
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfStringResponseModel'
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+      security:
+        - JWT: []
+  /api/catalog/brands/import:
+    post:
+      tags:
+        - catalog/brands
+      operationId: Catalog_Brand-Import
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadRequestModel'
+        required: true
+        x-position: 1
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfIntegerResponseModel'
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+      security:
+        - JWT: []
+
+  # Products ======================================================
+  /api/catalog/products:
+    get:
+      tags:
+        - catalog/products
+      operationId: Catalog_Product-GetAll
+      parameters:
+        - name: pageNumber
+          in: query
+          schema:
+            type: integer
+            format: int32
+          x-position: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            format: int32
+          x-position: 2
+        - name: searchString
+          in: query
+          schema:
+            type: string
+            nullable: true
+          x-position: 3
+        - name: orderBy
+          in: query
+          schema:
+            type: string
+            nullable: true
+          x-position: 4
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedResultOfProductsResponseModel'
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+      security:
+        - JWT: []
+    post:
+      tags:
+        - catalog/products
+      operationId: Catalog_Product-Post
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductModel'
+        required: true
+        x-position: 1
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfEntityCreatedResponseModel'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+      security:
+        - JWT: []
+  /api/catalog/products/{id}:
+    get:
+      tags:
+        - catalog/products
+      operationId: Catalog_Product-GetById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          x-position: 1
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfProductResponseModel'
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+      security:
+        - JWT: []
+    put:
+      tags:
+        - catalog/products
+      operationId: Catalog_Product-Put
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          x-position: 1
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductModel'
+        required: true
+        x-position: 2
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfEntityUpdatedResponseModel'
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfEntityUpdatedResponseModel'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+      security:
+        - JWT: []
+    delete:
+      tags:
+        - catalog/products
+      operationId: Catalog_Product-Delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          x-position: 1
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfEntityDeletedResponseModel'
+        400:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationProblemDetailsModel'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+      security:
+        - JWT: []
+  /api/catalog/products/export:
+    get:
+      tags:
+        - catalog/products
+      operationId: Catalog_Product-Export
+      parameters:
+        - name: searchString
+          in: query
+          schema:
+            type: string
+            default: ''
+            nullable: true
+          x-position: 1
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfStringResponseModel'
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+      security:
+        - JWT: []
+  /api/catalog/products/import:
+    post:
+      tags:
+        - catalog/brands
+      operationId: Catalog_Product-Import
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadRequestModel'
+        required: true
+        x-position: 1
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultOfIntegerResponseModel'
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+      security:
+        - JWT: []
+
+  # ProductTypes ======================================================
+  /api/catalog/producttypes:
+    get:
+      tags:
+        - catalog/producttypes
+      operationId: Catalog_ProductTypes-GetAll
+      parameters:
+        - name: pageNumber
+          in: query
+          schema:
+            type: integer
+            format: int32
+          x-position: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            format: int32
+          x-position: 2
+        - name: searchString
+          in: query
+          schema:
+            type: string
+            nullable: true
+          x-position: 3
+        - name: orderBy
+          in: query
+          schema:
+            type: string
+            nullable: true
+          x-position: 4
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedResultOfProductTypesResponseModel'
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailsModel'
+      security:
+        - JWT: []
+components:
+  schemas:
+    ResultResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+        - messages
+        - isSuccess
+      properties:
+        messages:
+          type: array
+          nullable: true
+          items:
+            type: string
+        isSuccess:
+          type: boolean
+    ResultOfStringResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            value:
+              type: string
+              nullable: true
+    ResultOfIntegerResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            value:
+              type: integer
+              format: int32
+    ProblemDetailsModel:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - instance
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+    ValidationProblemDetailsModel:
+      allOf:
+        - $ref: '#/components/schemas/ProblemDetailsModel'
+        - type: object
+          additionalProperties: false
+          required:
+            - errors
+          properties:
+            errors:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  type: string
+
+    ResultOfEntityCreatedResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            entityId:
+              type: string
+
+    ResultOfEntityUpdatedResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            entityId:
+              type: string
+
+    ResultOfEntityDeletedResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            entityId:
+              type: string
+
+    # Brands ======================================================
+    PagedResultOfBrandsResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultOfBrandsResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            currentPage:
+              type: integer
+              format: int32
+            totalPages:
+              type: integer
+              format: int32
+            totalCount:
+              type: integer
+              format: int64
+            pageSize:
+              type: integer
+              format: int32
+            hasPreviousPage:
+              type: boolean
+            hasNextPage:
+              type: boolean
+    ResultOfBrandResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            value:
+              nullable: true
+              oneOf:
+                - $ref: '#/components/schemas/BrandModel'
+    ResultOfBrandsResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            value:
+              type: array
+              nullable: true
+              items:
+                $ref: '#/components/schemas/BrandModel'
+    BrandModel:
+      allOf:
+        - type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: string
+              format: guid
+            name:
+              type: string
+              nullable: true
+            description:
+              type: string
+              nullable: true
+            keywords:
+              type: array
+              nullable: true
+              items:
+                type: string
+            pictureSvg:
+              type: string
+              nullable: true
+            pictureFileName:
+              type: string
+              nullable: true
+            pictureUri:
+              type: string
+              nullable: true
+            auditState:
+              nullable: true
+              oneOf:
+                - $ref: '#/components/schemas/AuditStateModel'
+    # Produts ======================================================
+    PagedResultOfProductsResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultOfProductsResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            currentPage:
+              type: integer
+              format: int32
+            totalPages:
+              type: integer
+              format: int32
+            totalCount:
+              type: integer
+              format: int64
+            pageSize:
+              type: integer
+              format: int32
+            hasPreviousPage:
+              type: boolean
+            hasNextPage:
+              type: boolean
+    ResultOfProductsResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            value:
+              type: array
+              nullable: true
+              items:
+                $ref: '#/components/schemas/ProductModel'
+    ProductModel:
+      allOf:
+        - type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: string
+              format: guid
+            name:
+              type: string
+              nullable: true
+            description:
+              type: string
+              nullable: true
+            keywords:
+              type: array
+              nullable: true
+              items:
+                type: string
+            pictureSvg:
+              type: string
+              nullable: true
+            pictureFileName:
+              type: string
+              nullable: true
+            pictureUri:
+              type: string
+              nullable: true
+            sku:
+              type: string
+              nullable: true
+            barcode:
+              type: string
+              nullable: true
+            size:
+              type: string
+              nullable: true
+            rating:
+              type: integer
+              format: int32
+            price:
+              type: number
+              format: decimal
+            typeId:
+              type: string
+              format: guid
+            type:
+              nullable: true
+              oneOf:
+                - $ref: '#/components/schemas/ProductTypeModel'
+            brandId:
+              type: string
+              format: guid
+            brand:
+              nullable: true
+              oneOf:
+                - $ref: '#/components/schemas/BrandModel'
+            auditState:
+              nullable: true
+              oneOf:
+                - $ref: '#/components/schemas/AuditStateModel'
+    ProductTypeModel:
+      allOf:
+        - type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: string
+              format: guid
+            name:
+              type: string
+              nullable: true
+            description:
+              type: string
+              nullable: true
+    ResultOfProductResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            value:
+              nullable: true
+              oneOf:
+                - $ref: '#/components/schemas/ProductModel'
+    PagedResultOfProductTypesResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultOfProductTypesResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            currentPage:
+              type: integer
+              format: int32
+            totalPages:
+              type: integer
+              format: int32
+            totalCount:
+              type: integer
+              format: int64
+            pageSize:
+              type: integer
+              format: int32
+            hasPreviousPage:
+              type: boolean
+            hasNextPage:
+              type: boolean
+    ResultOfProductTypesResponseModel:
+      allOf:
+        - $ref: '#/components/schemas/ResultResponseModel'
+        - type: object
+          additionalProperties: false
+          properties:
+            value:
+              type: array
+              nullable: true
+              items:
+                $ref: '#/components/schemas/ProductTypeModel'
+
+    AuditStateModel:
+      type: object
+      additionalProperties: false
+      properties:
+        createdBy:
+          type: string
+          nullable: true
+        createdDate:
+          type: string
+          format: date-time
+        createdDescription:
+          type: string
+          nullable: true
+        updatedBy:
+          type: string
+          nullable: true
+        updatedDate:
+          type: string
+          format: date-time
+          nullable: true
+        updatedDescription:
+          type: string
+          nullable: true
+        updatedReasons:
+          type: array
+          nullable: true
+          items:
+            type: string
+        deactivated:
+          type: boolean
+          nullable: true
+        deactivatedReasons:
+          type: array
+          nullable: true
+          items:
+            type: string
+        deactivatedBy:
+          type: string
+          nullable: true
+        deactivatedDate:
+          type: string
+          format: date-time
+          nullable: true
+        deactivatedDescription:
+          type: string
+          nullable: true
+        deleted:
+          type: boolean
+          nullable: true
+        deletedBy:
+          type: string
+          nullable: true
+        deletedDate:
+          type: string
+          format: date-time
+          nullable: true
+        deletedReason:
+          type: string
+          nullable: true
+        deletedDescription:
+          type: string
+          nullable: true
+        lastActionDate:
+          type: string
+          format: date-time
+          nullable: true
+    UploadRequestModel:
+      type: object
+      additionalProperties: false
+      properties:
+        fileName:
+          type: string
+          nullable: true
+        extension:
+          type: string
+          nullable: true
+        type:
+          type: string
+          nullable: true
+        data:
+          type: string
+          format: byte
+          nullable: true
+
+  securitySchemes:
+    JWT:
+      type: apiKey
+      description: Input your JWT token in this format - Bearer {your token here} to access this API
+      name: Authorization
+      in: header
+      # bearerFormat: JWT
+security:
+  - JWT: []

@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ModuleName>Identity</ModuleName>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Modules.$(ModuleName).Infrastructure</AssemblyName>
+    <RootNamespace>Modules.$(ModuleName).Infrastructure</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!--<Nullable>enable</Nullable>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BridgingIT.DevKit.Common.Abstractions" />
+    <PackageReference Include="BridgingIT.DevKit.Common.Caching" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.Identity.Web"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\$(ModuleName).Application\$(ModuleName).Application.csproj" />
+    <ProjectReference Include="..\$(ModuleName).Domain\$(ModuleName).Domain.csproj" />
+    <ProjectReference Include="..\..\..\Common\Common.Services\Common.Services.csproj" />
+  </ItemGroup>
+
+</Project>

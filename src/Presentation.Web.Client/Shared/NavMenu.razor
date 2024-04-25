@@ -1,0 +1,54 @@
+﻿@inject IStringLocalizer<NavMenu> localizer
+@using System.Security.Claims
+
+@*<UserCard />*@
+<MudNavMenu>
+    <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Home">@localizer["Home"]</MudNavLink>
+    <MudNavLink Href="/swagger/index.html" Target="_blank" Icon="@Icons.Material.Outlined.LiveHelp">
+        @localizer["Swagger"]
+    </MudNavLink>
+    <MudListSubheader Class="mt-2 mb-n2">@localizer["Personal"]</MudListSubheader>
+    @if (canViewDashboards)
+    {
+        <MudNavLink Href="/dashboard" Icon="@Icons.Material.Outlined.Dashboard">
+            @localizer["Dashboard"]
+        </MudNavLink>
+    }
+    <MudNavLink Href="/account" Icon="@Icons.Material.Outlined.SupervisorAccount">
+        @localizer["Account"]
+    </MudNavLink>
+
+    @if (canViewUsers || canViewRoles)
+    {
+        <MudListSubheader Class="mt-2 mb-n2">@localizer["Administrator"]</MudListSubheader>
+        @if (canViewUsers)
+        {
+            <MudNavLink Href="/identity/users" Icon="@Icons.Material.Outlined.Person">
+                @localizer["Users"]
+            </MudNavLink>
+        }
+        @if (canViewRoles)
+        {
+            <MudNavLink Href="/identity/roles" Icon="@Icons.Material.Outlined.Person">@localizer["Roles"]</MudNavLink>
+        }
+    }
+    @if (canViewProducts || canViewBrands)
+    {
+        <MudListSubheader Class="mt-2 mb-n2">@localizer["Catalog Management"]</MudListSubheader>
+        <MudNavLink Href="/modules/catalog/index" Icon="@Icons.Material.Outlined.Home">
+            @localizer["Index"]
+        </MudNavLink>
+        @if (canViewProducts)
+        {
+            <MudNavLink Href="/modules/catalog/products" Icon="@Icons.Material.Outlined.CallToAction">
+                @localizer["Products"]
+            </MudNavLink>
+        }
+        @if (canViewBrands)
+        {
+            <MudNavLink Href="/modules/catalog/brands" Icon="@Icons.Material.Outlined.CallToAction">
+                @localizer["Brands"]
+            </MudNavLink>
+        }
+    }
+</MudNavMenu>

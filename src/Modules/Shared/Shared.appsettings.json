@@ -1,0 +1,15 @@
+{
+  "Modules": {
+    "Shared": {
+      "Enabled": true,
+      "Mail": {
+        "From": "info@acme.com",
+        "Host": "mailhog",
+        "Port": 1027,
+        "UserName": "admin",
+        "Password": "Abcd1234!",
+        "DisplayName": "acme shop"
+      }
+    }
+  }
+}

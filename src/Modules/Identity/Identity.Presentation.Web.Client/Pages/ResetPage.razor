@@ -1,0 +1,37 @@
+﻿@page "/account/reset-password/"
+@*@layout MainLayout*@
+@attribute [AllowAnonymous]
+@inject IStringLocalizer<ResetPage> localizer
+
+<EditForm Model="@model" OnValidSubmit="SubmitAsync">
+    <FluentValidationValidator @ref="modelValidator" Options="@(options => options.IncludeAllRuleSets())" />
+    <MudGrid>
+        <MudItem xs="12">
+            <div class="d-flex justify-center">
+                <MudIcon Icon="@AppIcons.Logo" Color="Color.Primary" Size="Size.Large" ViewBox="0 0 500 500" Style="width: 100px; height: 100px;" />
+            </div>
+        </MudItem>
+        <MudItem xs="12">
+            <div class="d-flex justify-center">
+                <MudText Typo="Typo.h4">@localizer["Reset password"]</MudText>
+            </div>
+        </MudItem>
+        <MudItem xs="12">
+            <div class="d-flex justify-center">
+                <MudText Typo="Typo.subtitle2" Class="mb-n4">@localizer["Enter email for password reset"]</MudText>
+            </div>
+        </MudItem>
+        <MudItem xs="12">
+            <MudTextField T="string" Label="@localizer["E-mail"]" @bind-Value="model.Email" For="@(() => model.Email)" Variant="Variant.Outlined" />
+        </MudItem>
+        <MudItem xs="12">
+            <MudTextField T="string" Label="@localizer["Password"]" @bind-Value="model.Password" For="@(() => model.Password)" Variant="Variant.Outlined" InputType="@passwordInput" Adornment="Adornment.End" AdornmentIcon="@passwordInputIcon" OnAdornmentClick="TogglePasswordVisibility" />
+        </MudItem>
+        <MudItem xs="12">
+            <MudTextField T="string" Label="@localizer["Confirm Password"]" @bind-Value="model.ConfirmPassword" For="@(() => model.ConfirmPassword)" Variant="Variant.Outlined" InputType="InputType.Password" />
+        </MudItem>
+        <MudItem xs="12" Class="d-flex justify-center">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Size="Size.Large" FullWidth="true">@localizer["Reset Password"]</MudButton>
+        </MudItem>
+    </MudGrid>
+</EditForm>

@@ -1,0 +1,63 @@
+﻿@page "/home"
+@page "/"
+@using BridgingIT.DevKit.Presentation.Web.Client;
+@inject IStringLocalizer<Index> localizer
+
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" sm="12" md="12">
+            <div class="d-flex justify-center mt-4">
+                @*<MudIcon Icon="@AppIcons.Logo" Color="Color.Primary" Size="Size.Large" ViewBox="0 0 500 500" Style="width: 250px; height: 250px;" />*@
+            </div>
+        </MudItem>
+        <MudItem xs="12" sm="12" md="12">
+            <div class="d-flex justify-center mt-4">
+                <MudText Typo="Typo.h4">Acme Shop!</MudText>
+            </div>
+            <MudDivider DividerType="DividerType.Middle" />
+        </MudItem>
+        <MudItem xs="12" sm="12" md="12">
+            <div class="d-flex justify-center mt-4">
+                <MudButton Variant="Variant.Filled" Color="Color.Default">Default</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary">Primary</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary">Secondary</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Tertiary">Tertiary</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Success">Success</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Info">Info</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Warning">Warning</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Error">Error</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Dark">Dark</MudButton>
+            </div>
+@*            <MudIconButton Variant="Variant.Filled" Icon="@Icons.Material.Filled.ContentCopy" Color="Color.Primary"
+            OnClick="@(async () => await jsRuntime.CopyToClipboardAsync("Copied from BridgingIT.DevKit example shop!"))"></MudIconButton>*@
+        </MudItem>
+        <MudItem xs="12" sm="12" md="12">
+            <div class="d-flex justify-center mt-4">
+                <MudIcon Icon="@Icons.Custom.Uncategorized.Radioactive" Size="Size.Large" Color="Color.Default" />
+                <MudIcon Icon="@Icons.Custom.Uncategorized.Radioactive" Size="Size.Large" Color="Color.Primary" />
+                <MudIcon Icon="@Icons.Custom.Uncategorized.Radioactive" Size="Size.Large" Color="Color.Secondary" />
+                <MudIcon Icon="@Icons.Custom.Uncategorized.Radioactive" Size="Size.Large" Color="Color.Tertiary" />
+                <MudIcon Icon="@Icons.Custom.Uncategorized.Radioactive" Size="Size.Large" Color="Color.Success" />
+                <MudIcon Icon="@Icons.Custom.Uncategorized.Radioactive" Size="Size.Large" Color="Color.Info" />
+                <MudIcon Icon="@Icons.Custom.Uncategorized.Radioactive" Size="Size.Large" Color="Color.Warning" />
+                <MudIcon Icon="@Icons.Custom.Uncategorized.Radioactive" Size="Size.Large" Color="Color.Error" />
+                <MudIcon Icon="@Icons.Custom.Uncategorized.Radioactive" Size="Size.Large" Color="Color.Dark" />
+            </div>
+        </MudItem>
+
+        @if (this.IsConnected)
+        {
+            <MudAlert Severity="Severity.Success" Variant="Variant.Filled" NoIcon="true">signalr connected</MudAlert>
+        }
+        else
+        {
+            <MudAlert Severity="Severity.Error" Variant="Variant.Filled" NoIcon="true">signalr not connected</MudAlert>
+        }
+        <MudContainer>
+            <div>token: @this.authToken.Truncate(15, "...") <MudIconButton Icon="@Icons.Material.Filled.ContentCopy" Size="Size.Small" OnClick="@(() => CopyText($"Bearer {this.authToken}"))"></MudIconButton></div>
+            <div>permissions: @this.permissions</div>
+            @* <div>token valid: @this.isTokenValid</div>
+            <div>token exp: @this.tokenExpiration.ToLocalTime().ToString("o") (local)</div> *@
+        </MudContainer>
+    </MudGrid>
+</MudContainer>

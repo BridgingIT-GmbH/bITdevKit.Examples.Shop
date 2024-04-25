@@ -1,0 +1,58 @@
+﻿@using System.Reflection
+@*<Error>*@
+    @* <ApplicationInsightsComponent /> *@
+    <Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="@assemblies">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    @* <h3>Unauthorized</h3>
+                    <p>Please <a href="@Modules.Identity.Presentation.Web.Client.IdentityPageConstants.Login">login</a></p> *@
+                    @*<global::Modules.Identity.Presentation.Web.Client.Pages.LoginPage />*@
+
+                    @if (@context.User.Identity?.IsAuthenticated is true)
+                    {
+                        <h3>Unauthorized</h3>
+                        <p>Please <a href="@Modules.Identity.Presentation.Web.Client.IdentityPageConstants.Login">login</a></p>
+                    }
+                    else
+                    {
+                        <Modules.Identity.Presentation.Web.Client.Pages.LoginPage />
+                    }
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <CascadingAuthenticationState>
+                <LayoutView Layout="@typeof(NotFoundLayout)">
+                    <h3>Nothing found</h3>
+                    <p>Please <a href="/">return</a></p>
+                </LayoutView>
+            </CascadingAuthenticationState>
+        </NotFound>
+    </Router>
+@*</Error>*@
+
+@code{
+    // [CascadingParameter]
+    // protected Task<AuthenticationState> AuthState { get; set; } = default!;
+
+    // protected async override Task OnInitializedAsync()
+    // {
+    //     base.OnInitialized();
+
+    //     var user = (await this.AuthState)?.User;
+    //     if(!user?.Identity?.IsAuthenticated == false)
+    //     {
+    //         this.navManager.NavigateTo($"{Modules.Identity.Presentation.Web.Client.IdentityPageConstants.Login}?redirectUrl={Uri.EscapeDataString(navManager.Uri)}");
+    //     }
+    // }
+
+    public IEnumerable<Assembly> assemblies = new List<Assembly>
+    {
+        // TODO: find the assemblies with some scanning
+        typeof(global::Modules.Catalog.Presentation.Web.Client.Pages.IndexPage).Assembly,
+        typeof(global::Modules.Identity.Presentation.Web.Client.Pages.IndexPage).Assembly,
+        typeof(global::Modules.Inventory.Presentation.Web.Client.Pages.IndexPage).Assembly,
+        typeof(global::Modules.Ordering.Presentation.Web.Client.Pages.IndexPage).Assembly
+    };
+}

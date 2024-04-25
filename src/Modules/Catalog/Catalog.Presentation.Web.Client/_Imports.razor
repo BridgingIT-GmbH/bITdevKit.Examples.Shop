@@ -1,0 +1,37 @@
+﻿@using BridgingIT.DevKit.Common;
+@using Blazored.LocalStorage;
+@using Blazored.FluentValidation
+@using System.Net.Http
+@using System.Net.Http.Json
+@using Common
+@using Common.Presentation.Web.Client.Models
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Authorization.Infrastructure
+@using Microsoft.AspNetCore.Components.Authorization;
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.Extensions.Localization
+@using Microsoft.Extensions.Logging
+@using Microsoft.JSInterop
+@using MudBlazor
+
+@using Common.Presentation.Web.Client
+@using Common.Presentation.Web.Client.Components
+@using Modules.Catalog.Presentation.Web.Client
+@using Modules.Catalog.Presentation.Web.Client.Components
+@using Modules.Catalog.Presentation.Web.Client.Pages
+
+@attribute [Authorize]
+@inject ILoggerFactory loggerFactory
+@inject IJSRuntime jsRuntime
+@inject ISnackbar snackbar
+@inject IDialogService dialogService
+@inject ILocalStorageService localStorage
+@inject IAuthenticationManager authManager
+@inject IClientPreferenceManager clientPreferenceManager
+@inject NavigationManager navManager
+@inject AppConfiguration appConfiguration
+@inject ILoggerProvider loggerProvider
+@inject ICatalogApiClient apiClient

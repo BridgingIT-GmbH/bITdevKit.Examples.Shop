@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ModuleName>Ordering</ModuleName>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Modules.$(ModuleName).Domain</AssemblyName>
+    <RootNamespace>Modules.$(ModuleName).Domain</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!--<Nullable>enable</Nullable>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BridgingIT.DevKit.Domain.Mediator" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,23 @@
+{
+  "Modules": {
+    "Identity": {
+      //"Provider": "AzureAd",
+      "Provider": "Jwt",
+      "Jwt": {
+        "SigningSecret": "fb54f3c5992b96d001bb16e8e92d968d123",
+        "TokenLifetime": "23:59:59",
+        "RefreshTokenLifetime": "72:00:00"
+      },
+      "AzureAd": { // https://code-maze.com/using-azure-active-directory-to-secure-blazor-webassembly-hosted-apps/
+        "Instance": "https://login.microsoftonline.com/",
+        "Domain": "bitbaukasten.onmicrosoft.com",
+        "TenantId": "organizations",
+        "ClientId": "6b759f89-5dd7-4f51-8a24-8ebab537e4c4", // ShopApi/Application ID
+        "Scopes": "access_as_user"
+      },
+      "ConnectionStrings": {
+        "SqlServer": "Server=127.0.0.1,14337;Database=bitdevkit_shop;User=sa;Password=Abcd1234!;Trusted_Connection=false;encrypt=false"
+      }
+    }
+  }
+}

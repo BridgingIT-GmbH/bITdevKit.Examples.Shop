@@ -1,0 +1,244 @@
+version: '3.7'
+
+services:
+  # ============= SERVICES ======================================================================================================
+  # ===================================================================================================================================
+  # TODO
+
+  # ============= INFRASTRUCTURE ======================================================================================================
+  # ===================================================================================================================================
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: shop_mssql
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Abcd1234!
+      - MSSQL_PID=Developer
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S mssql -U SA -P 'Abcd1234!' -Q 'select 1'
+    ports:
+      - 14337:1433
+    volumes:
+      - mssql:/var/opt/mssql
+    networks:
+      - acme
+
+  mssqlscripts:
+    image: mcr.microsoft.com/mssql-tools:latest
+    container_name: shop_mssqlscripts
+    depends_on:
+      - mssql
+    command: /bin/bash -c 'until /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P "Abcd1234!" -Q "SELECT @@VERSION"; do sleep 5; done'
+    networks:
+      - acme
+
+  sqlpad:
+    image: sqlpad/sqlpad:5
+    container_name: shop_sqlpad
+    depends_on:
+      - mssql
+    ports:
+      - '3000:3000' # http://localhost:3000 (login:admin/admin)
+    environment:
+      SQLPAD_ADMIN: admin
+      SQLPAD_ADMIN_PASSWORD: admin
+      SQLPAD_APP_LOG_LEVEL: info
+      SQLPAD_WEB_LOG_LEVEL: warn
+      SQLPAD_CONNECTIONS__bitdevkitshop__name: bitdevkit_shop
+      SQLPAD_CONNECTIONS__bitdevkitshop__driver: sqlserver
+      SQLPAD_CONNECTIONS__bitdevkitshop__host: mssql
+      SQLPAD_CONNECTIONS__bitdevkitshop__database: bitdevkit_shop
+      SQLPAD_CONNECTIONS__bitdevkitshop__username: sa
+      SQLPAD_CONNECTIONS__bitdevkitshop__password: Abcd1234!
+    volumes:
+      - sqlpad:/var/lib/sqlpad
+    networks:
+      - acme
+
+  rabbitmq:
+    image: rabbitmq:3.9-management
+    restart: unless-stopped
+    container_name: shop_rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672 # http://localhost:15672 (login:admin/admin)
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+      #- RABBITMQ_DEFAULT_VHOST=default
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/
+      - rabbitmq_log:/var/log/rabbitmq/
+      # - ./tools/rabbitmq/data/:/var/lib/rabbitmq/
+      # - ./tools/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - acme
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    hostname: azurite
+    container_name: shop_azurite
+    restart: unless-stopped
+    command: 'azurite --loose --blobHost 0.0.0.0 --skipApiVersionCheck --blobPort 10000 --queueHost 0.0.0.0 --queuePort 10001 --tableHost 0.0.0.0 --tablePort 10002 --location /workspace --debug /workspace/debug.log'
+    ports:
+      - 10000:10000 # blob     # https://github.com/Azure/Azurite#connection-strings DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;
+      - 10001:10001 # queue
+      - 10002:10002 # table
+    volumes:
+      - ./tools/azurite:/workspace
+    networks:
+      - acme
+
+
+#   pulsar:
+#     image: apachepulsar/pulsar:latest
+#     restart: unless-stopped
+#     container_name: shop_pulsar
+#     command: bin/pulsar standalone
+#     hostname: pulsar
+#     environment:
+#       PULSAR_MEM: " -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"
+#     healthcheck:
+#       interval: 10s
+#       retries: 20
+#       test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8080/admin/v2/clusters/standalone
+#     volumes:
+#       - ./tools/pulsar/data:/pulsar/data
+#     ports:
+#       - 6650:6650
+#       - 8080:8080 # http://localhost:8080/metrics/
+#     networks:
+#       - acme
+
+#   pulsar-manager: # https://github.com/apache/pulsar-manager
+#     image: apachepulsar/pulsar-manager:latest
+#     restart: unless-stopped
+#     container_name: shop_pulsar_manager
+#     ports:
+#       - 9527:9527 # http://localhost:9527 (login:pulsar/pulsar)
+#       - 7750:7750
+#     depends_on:
+#       - pulsar
+#     links:
+#       - pulsar
+#     environment:
+#       SPRING_CONFIGURATION_FILE: /pulsar-manager/pulsar-manager/application.properties
+#     networks:
+#       - acme
+# # # create a super-user using the following commands (shell into shop_pulsar_manager)
+# # apk add curl
+# # CSRF_TOKEN=$(curl http://localhost:7750/pulsar-manager/csrf-token)
+# # curl --verbose -H 'X-XSRF-TOKEN: $CSRF_TOKEN' -H 'Cookie: XSRF-TOKEN=$CSRF_TOKEN;' -H 'Content-Type: application/json' -X PUT http://localhost:7750/pulsar-manager/users/superuser -d '{"name": "pulsar", "password": "pulsar", "description": "Pulsar Manager Admin", "email": "support@pulsar.io"}'
+# # # create a new environment
+# # name=shop, service url=http://pulsar:8080
+
+  seq:
+    image: datalust/seq:latest
+    container_name: shop_seq
+    restart: unless-stopped
+    ports:
+      - 5347:80 # http://localhost:5347 azure:https://ml-software.ch/posts/running-seq-on-azure
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_ADMINUSERNAME=admin
+      # https://blog.datalust.co/setting-an-initial-password-when-deploying-seq-to-docker/
+      - SEQ_FIRSTRUN_ADMINPASSWORDHASH=FIQIay86/lqTJOWoq8jeh1KUr3wSfubJJ+/mB+fluLSK+ZhBQQ==
+    volumes:
+      - seq:/data
+    networks:
+    - acme
+
+  #smtp4dev:
+  #  image: rnwood/smtp4dev:v3 # https://github.com/rnwood/smtp4dev/blob/master/docker-compose.yml
+  #  container_name: shop_smtp4dev
+  #  restart: unless-stopped
+  #  ports:
+  #    - 8027:80 # http://localhost:8027
+  #    - 27:25 # SMTP
+  #    - 147:143 # IMAP
+  #  volumes:
+  #      - smtp4dev:/smtp4dev
+  #  environment:
+  #    - ServerOptions__HostName=smtp4dev
+  #    - RelayOptions__Login=admin
+  #    - RelayOptions__Password=Abcd1234!
+
+  mailhog:
+    image: mailhog/mailhog # https://github.com/mailhog/MailHog
+    container_name: shop_mailhog
+    restart: unless-stopped
+    logging:
+      driver: 'none'
+    ports:
+      - 8027:8025 # http://localhost:8027
+      - 1027:1025 # SMTP
+    volumes:
+      - mailhog:/maildir
+    networks:
+      - acme
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: shop_jaeger
+    restart: unless-stopped
+    ports:
+      - 5775:5775/udp
+      - 5778:5778
+      - 6831:6831/udp
+      - 6832:6832/udp # AgentPort
+      - 9411:9411
+      - 14268:14268
+      - 16686:16686 # http://localhost:16686
+    environment:
+      # https://www.jaegertracing.io/docs/1.16/deployment/#badger---local-storage
+      - SPAN_STORAGE_TYPE=badger
+      - BADGER_EPHEMERAL=false
+      - BADGER_DIRECTORY_VALUE=/badger/data
+      - BADGER_DIRECTORY_KEY=/badger/key
+    volumes:
+      - jaeger:/badger
+    networks:
+      - acme
+
+  structurizr: # docker run -it --rm -p 8080:8080 -v $PWD/docs/structurizr:/usr/local/structurizr structurizr/lite
+    image: structurizr/lite # https://dev.to/simonbrown/getting-started-with-structurizr-lite-27d0
+    container_name: shop_structurizr
+    restart: unless-stopped
+    ports:
+      - 4044:8080 # http://localhost:4044
+    volumes:
+      - ./docs/structurizr:/usr/local/structurizr
+    networks:
+      - acme
+
+volumes:
+  mssql:
+    name: shop_mssql
+    driver: local
+  sqlpad:
+    name: shop_sqlpad
+    driver: local
+  seq:
+    name: shop_seq
+    driver: local
+  mailhog:
+    name: shop_mailhog
+    driver: local
+  jaeger:
+    name: shop_jaeger
+    driver: local
+  rabbitmq_data:
+    name: shop_rabbitmq_data
+    driver: local
+  rabbitmq_log:
+    name: shop_rabbitmq_log
+    driver: local
+  #smtp4dev:
+  #  name: shop_smtp4dev
+  #  driver: local
+
+networks:
+  acme:
+    name: acme
+    driver: bridge

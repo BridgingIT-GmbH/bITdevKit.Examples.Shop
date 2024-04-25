@@ -1,0 +1,10 @@
+﻿@inject IStringLocalizer<LanguageSelector> localizer
+
+<MudTooltip Text="@localizer["Change language"]">
+    <MudMenu Icon="@Icons.Material.Outlined.Translate" Color="Color.Inherit" Dense="true" TransformOrigin="Origin.TopCenter">
+        @foreach (var language in LocalizationConstants.SupportedLanguages.SafeNull())
+        {
+            <MudMenuItem OnClick="(()=> ChangeLanguageAsync(language.Code))">@localizer[language.DisplayName]</MudMenuItem>
+        }
+    </MudMenu>
+</MudTooltip>

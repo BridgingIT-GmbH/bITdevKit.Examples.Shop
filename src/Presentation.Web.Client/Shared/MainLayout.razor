@@ -1,0 +1,38 @@
+﻿@inherits LayoutComponentBase
+
+<MudRTLProvider RightToLeft="@rightToLeft">
+    <MudThemeProvider Theme="currentTheme" />
+    <MudDialogProvider DisableBackdropClick="false" CloseButton="true" />
+    <MudSnackbarProvider />
+    <AuthorizeView>
+        <Authorized>
+            <MudLayout>
+                <MainBody OnDarkModeToggle="@DarkModeToggle">
+                    @Body
+                </MainBody>
+            </MudLayout>
+        </Authorized>
+        <NotAuthorized>
+            <MudAppBar Elevation="25">
+                @if (appConfiguration.EnableDarkModeToggle)
+                {
+                    <MudHidden Breakpoint="Breakpoint.SmAndUp" Invert="true">
+                        <MudIcon Icon="@AppIcons.Logo" Color="@(isDarkMode ? Color.Primary : Color.Surface)" Size="Size.Medium" ViewBox="0 0 300 100" Style="width: 180px; height: 100%; padding-top: 7px;" />
+                    </MudHidden>
+                }
+                <MudSpacer />
+                @*<MudDivider Vertical="true" FlexItem="true" DividerType="DividerType.Middle" Class="mx-4 my-5" />*@
+                @if (appConfiguration.EnableLanguageToggle)
+                {
+                    <LanguageSelector />
+                }
+                <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => DarkModeToggle())" />
+            </MudAppBar>
+            <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex align-center" Style="height: 100vh;">
+                <MudPaper Elevation="25" Class="pa-8" Style="width: 500px;">
+                    @Body
+                </MudPaper>
+            </MudContainer>
+        </NotAuthorized>
+    </AuthorizeView>
+</MudRTLProvider>

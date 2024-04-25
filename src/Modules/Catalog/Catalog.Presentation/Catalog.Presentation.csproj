@@ -1,0 +1,100 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ModuleName>Catalog</ModuleName>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Modules.$(ModuleName).Presentation</AssemblyName>
+    <RootNamespace>Modules.$(ModuleName).Presentation</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!--<Nullable>enable</Nullable>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BridgingIT.DevKit.Common.Extensions.Web" />
+    <PackageReference Include="BridgingIT.DevKit.Common.Modules" />
+    <PackageReference Include="BridgingIT.DevKit.Presentation.Web" />
+    <PackageReference Include="BridgingIT.DevKit.Application.Entities.Messaging" />
+    <PackageReference Include="BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServer" />
+    <PackageReference Include="BridgingIT.DevKit.Common.Utilities.Tracing" />
+    <PackageReference Include="AspNetCore.HealthChecks.SqlServer" />
+    <PackageReference Include="AspNetCore.HealthChecks.Uris" />
+    <PackageReference Include="Microsoft.AspNetCore.OData" />
+    <PackageReference Include="NSwag.AspNetCore" />
+    <PackageReference Include="NSwag.MSBuild">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\_tmp\Presentation.Web.Entities.CodeGen\Presentation.Web.Entities.CodeGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\..\Common\Common.SignalR\Common.SignalR.csproj" />
+    <ProjectReference Include="..\$(ModuleName).Application\$(ModuleName).Application.csproj" />
+    <ProjectReference Include="..\$(ModuleName).Domain\$(ModuleName).Domain.csproj" />
+    <ProjectReference Include="..\$(ModuleName).Infrastructure\$(ModuleName).Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\$(ModuleName).appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="..\$(ModuleName).appsettings.*.json">
+      <DependentUpon>..\$(ModuleName).appsettings.json</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <!--Store the file output of source generators in .\Generated folder-->
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>__gen</CompilerGeneratedFilesOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--Exclude the file output of source generators from the compilation-->
+    <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
+    <Content Include="__gen\BridgingIT.DevKit.Presentation.Web.Entities.CodeGen\BridgingIT.DevKit.Presentation.Web.Entities.CodeGen.ControllersGenerator\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Generated\BridgingIT.DevKit.Presentation.Web.Entities.CodeGen\BridgingIT.DevKit.Presentation.Web.Entities.CodeGen.ControllersGenerator\**" />
+    <None Remove="Generated\BridgingIT.DevKit.Presentation.Web.Entities.CodeGen\BridgingIT.DevKit.Presentation.Web.Entities.CodeGen.ControllersGenerator\**" />
+  </ItemGroup>
+
+  <!-- NSwag tool API Controller generation (openapi2cscontroller) -->
+  <PropertyGroup>
+    <ApiSpecGenerate>true</ApiSpecGenerate> <!--$(BuildingInsideVisualStudio)-->
+    <ApiSpecName>$(ModuleName)-OpenAPI</ApiSpecName>
+    <ApiSpecLocation>../$(ApiSpecName).yaml</ApiSpecLocation>
+    <ApiControllerClassName>$(ModuleName)</ApiControllerClassName>
+    <ApiControllerNamespace>Modules.$(ModuleName).Presentation.Web.Controllers</ApiControllerNamespace>
+    <ApiControllerOutputDirectory>./Web/Controllers</ApiControllerOutputDirectory>
+  </PropertyGroup>
+  <Target Name="GenerateApiController" BeforeTargets="CoreCompile" Inputs="$(ApiSpecLocation)" Outputs="$(ApiControllerOutputDirectory)\$(ApiControllerClassName).cs" Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
+    <Exec Command="$(NSwagExe) openapi2cscontroller /input:$(ApiSpecLocation) /classname:$(ApiControllerClassName) /namespace:$(ApiControllerNamespace) /output:$(ApiControllerOutputDirectory)\$(ApiControllerClassName)ControllerBase.cs /ControllerBaseClass:Microsoft.AspNetCore.Mvc.Controller /RouteNamingStrategy:OperationId /ControllerStyle:Abstract /UseActionResultType:true /JsonLibrary:SystemTextJson /ArrayType:System.Collections.Generic.IEnumerable" ConsoleToMSBuild="true" ContinueOnError="WarnAndContinue">
+      <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfExec" />
+    </Exec>
+  </Target>
+  <Target Name="CleanApiController" AfterTargets="CoreClean" Condition="'$(ApiSpecGenerate)' == 'true'">
+    <!--<Delete Files="$(ApiControllerOutputDirectory)\$(ApiControllerClassName)ControllerBase.cs"></Delete>-->
+  </Target>
+
+  <ItemGroup>
+    <GeneratedFilesPresentation Include="$(MSBuildProjectDirectory)\..\__gen\Presentation\**\*.*" />
+  </ItemGroup>
+
+  <!-- Bundle and build documentation for the api specification, see https://redocly.com/docs/cli/commands for help -->
+  <Target Name="GenerateApiSpec" BeforeTargets="CoreCompile" Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
+    <Exec Command="docker run --rm -v $(MSBuildProjectDirectory)/..:/spec redocly/cli bundle $(ApiSpecName).yaml -o ./__gen/Presentation/wwwroot/openapi/$(ApiSpecName).yaml" ContinueOnError="WarnAndContinue" />
+    <Exec Command="docker run --rm -v $(MSBuildProjectDirectory)/..:/spec redocly/cli build-docs $(ApiSpecName).yaml -o ./__gen/Presentation/wwwroot/openapi/$(ApiSpecName).html" ContinueOnError="WarnAndContinue" />
+    <Copy SourceFiles="@(GeneratedFilesPresentation)" DestinationFiles="@(GeneratedFilesPresentation->'$(MSBuildProjectDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" ContinueOnError="WarnAndContinue" />
+  </Target>
+  <Target Name="CleanApiSpec" AfterTargets="CoreClean">
+    <Delete Files="@(GeneratedFilesPresentation)"></Delete>
+    <Delete Files=".\wwwroot\openapi\$(ApiSpecName).yaml"></Delete>
+    <Delete Files=".\wwwroot\openapi\$(ApiSpecName).html"></Delete>
+  </Target>
+
+</Project>

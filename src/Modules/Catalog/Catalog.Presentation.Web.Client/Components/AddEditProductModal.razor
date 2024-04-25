@@ -1,0 +1,121 @@
+﻿@inject IStringLocalizer<AddEditProductModal> localizer
+
+
+<ErrorBoundary @ref="errorBoundary">
+    <ChildContent>
+        <EditForm Model="@Model" OnValidSubmit="SaveAsync">
+            <FluentValidationValidator @ref="modelValidator" Options="@(options => options.IncludeAllRuleSets())" />
+            <MudDialog>
+                <TitleContent>
+                    @{
+                        if (Model.Id == Guid.Empty)
+                        {
+                            <MudText Typo="Typo.h6">
+                                <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3 mb-n1" />
+                                @localizer["Add Product"]
+                            </MudText>
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.h6">
+                                <MudIcon Icon="@Icons.Material.Filled.Update" Class="mr-3 mb-n1" />
+                                @localizer["Update Product"]
+                            </MudText>
+                        }
+                    }
+                </TitleContent>
+                <DialogContent>
+                    <MudGrid>
+                        @*@if (Model.Id != Guid.Empty)
+                        {
+                            <MudItem xs="12" md="12">
+                                <MudTextField Disabled For="@(() => Model.Id)" @bind-Value="Model.Id" Label="@localizer["Id"]" />
+                            </MudItem>
+                        }*@
+                        <MudItem xs="12" md="6">
+                            <MudTextField For="@(() => Model.Name)" @bind-Value="Model.Name" Label="@localizer["Name"]" MaxLength="256" />
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudTextField For="@(() => Model.Sku)" @bind-Value="Model.Sku" Label="@localizer["Sku"]" InputType="InputType.Text" MaxLength="256" />
+                        </MudItem>
+                        <MudItem xs="12" md="12">
+                            <MudTextField For="@(() => Model.Description)" @bind-Value="Model.Description" MaxLength="2048" Lines="2" Label="@localizer["Description"]" />
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudAutocomplete T="Guid" For="@(() => Model.BrandId)" @bind-Value="Model.BrandId" Label="@localizer["Brand"]" ResetValueOnEmptyText="true" SearchFunc="@SearchBrands" Variant="Variant.Filled" ToStringFunc="@(i => brands.FirstOrDefault(e => e.Id == i)?.Name ?? string.Empty)" />
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudAutocomplete T="Guid" For="@(() => Model.TypeId)" @bind-Value="Model.TypeId" Label="@localizer["Type"]" ResetValueOnEmptyText="true" SearchFunc="@SearchTypes" Variant="Variant.Filled" ToStringFunc="@(i => types.FirstOrDefault(e => e.Id == i)?.Name ?? string.Empty)" />
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudNumericField For="@(() => Model.Price)" @bind-Value="Model.Price" Label="@localizer["Price"]" Min="0.00m" Max="9999.99m" Format="N2" />
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudTextField For="@(() => Model.Barcode)" @bind-Value="Model.Barcode" Label="@localizer["Barcode"]" MaxLength="256" />
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudTextField For="@(() => Model.Size)" @bind-Value="Model.Size" Label="@localizer["Size"]" />
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudRating @bind-SelectedValue="Model.Rating" Label="@localizer["Rate"]" />
+                        </MudItem>
+                        @*<MudItem xs="12" md="6">
+                            <MudItem>
+                                <MudAvatar Image="@(Model.ImageDataURL)" Square="true" Style="height: auto; width: auto; max-height: 100%"> </MudAvatar>
+                            </MudItem>
+                            <MudItem>
+                                <InputFile id="fileInput" hidden OnChange="UploadFiles" />
+                                <div>
+                                    <MudButton HtmlTag="label"
+                                               Variant="Variant.Text"
+                                               Color="Color.Primary"
+                                               Size="Size.Small"
+                                               StartIcon="@Icons.Filled.CloudUpload"
+                                               for="fileInput">
+                                        @_localizer["Upload"]
+                                    </MudButton>
+                                    @if (!string.IsNullOrEmpty(Model.ImageDataURL))
+                                    {
+                                        <MudButton Variant="Variant.Text"
+                                                   Color="Color.Info"
+                                                   StartIcon="@Icons.Filled.RemoveRedEye"
+                                                   Size="Size.Small"
+                                                   Link="@(Model.ImageDataURL)" Target="_blank">
+                                            @_localizer["View"]
+                                        </MudButton>
+                                        <MudButton Variant="Variant.Text"
+                                                   Color="Color.Error"
+                                                   StartIcon="@Icons.Filled.Delete"
+                                                   Size="Size.Small"
+                                                   OnClick="DeleteAsync">
+                                            @_localizer["Delete"]
+                                        </MudButton>
+                                    }
+                                </div>
+                            </MudItem>
+                        </MudItem>*@
+                    </MudGrid>
+                </DialogContent>
+                <DialogActions>
+                    <MudButton DisableElevation Variant="Variant.Filled" OnClick="Cancel">@localizer["Cancel"]</MudButton>
+                    @if (Model.Id != Guid.Empty)
+                    {
+                        <MudButton DisableElevation Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Success">@localizer["Update"]</MudButton>
+                    }
+                    else
+                    {
+                        <MudButton DisableElevation Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Success">@localizer["Save"]</MudButton>
+                    }
+                </DialogActions>
+            </MudDialog>
+        </EditForm>
+    </ChildContent>
+    <ErrorContent>
+        <MudAlert Severity="Severity.Error" ShowCloseIcon="true" CloseIconClicked="CloseError" Variant="Variant.Outlined" ContentAlignment="HorizontalAlignment.Center">Sorry about that, something seems to have gone wrong.</MudAlert>
+    </ErrorContent>
+</ErrorBoundary>
+
+
+
+
+

@@ -1,0 +1,19 @@
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
+@inject IWebAssemblyHostEnvironment HostEnvironment
+
+@if (DrawerMode)
+{
+    <MudPaper Class="d-flex align-start flex-column py-2 px-1" Style="height:100%; background-color: var(--mud-palette-drawer-background);" Elevation="0">
+        <MudPaper Class="pa-2 my-1 mx-2 mb-auto" Style="background-color: var(--mud-palette-drawer-background);" Elevation="0"></MudPaper>
+        <MudPaper Class="pa-2 my-1 mx-2" Style="background-color: var(--mud-palette-drawer-background);" Elevation="0"></MudPaper>
+        <MudText Class="pa-2 my-1 mx-2" Style="width: 90%; padding-bottom: 0px !important; margin-bottom: 0px !important;" Align="Align.Center" Typo="Typo.caption">
+            @version [@HostEnvironment.Environment]
+        </MudText>
+    </MudPaper>
+}
+else
+{
+    <MudText Typo="Typo.caption">
+        @version [@HostEnvironment.Environment]
+    </MudText>
+}

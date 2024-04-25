@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ModuleName>Shopping</ModuleName>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Modules.$(ModuleName).Application</AssemblyName>
+    <RootNamespace>Modules.$(ModuleName).Application</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!--<Nullable>enable</Nullable>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BridgingIT.DevKit.Application.Commands" />
+    <PackageReference Include="BridgingIT.DevKit.Application.Entities" />
+    <PackageReference Include="BridgingIT.DevKit.Application.Queries" />
+    <PackageReference Include="BridgingIT.DevKit.Application.JobScheduling" />
+    <PackageReference Include="BridgingIT.DevKit.Application.Messaging" />
+    <PackageReference Include="BridgingIT.DevKit.Application.Storage" />
+    <PackageReference Include="BridgingIT.DevKit.Common.Mapping" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\$(ModuleName).Domain\$(ModuleName).Domain.csproj" />
+    <ProjectReference Include="..\..\..\Common\Common.Abstractions\Common.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="$(ModuleName)Resources.Designer.cs">
+      <DependentUpon>$(ModuleName)Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="$(ModuleName)Resources.de.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="$(ModuleName)Resources.en.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="$(ModuleName)Resources.resx">
+      <LastGenOutput>$(ModuleName)Resources.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

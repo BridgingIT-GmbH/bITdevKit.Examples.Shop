@@ -1,0 +1,32 @@
+{{ if policy != "" }}
+[Authorize(Policy = "{{ policy }}")]
+{{ else if authorize == true }}
+[Authorize]
+{{ end }}
+[HttpGet]
+[ProducesResponseType((int)HttpStatusCode.OK)]
+[ProducesResponseType((int)HttpStatusCode.NotFound)]
+[ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+[ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.InternalServerError)]
+{{ if module != "" }}
+[OpenApiTag("{{ module | string.downcase }}/{{ entity_name | string.split "." | array.last | pluralize | string.downcase }}")]
+{{ else }}
+[OpenApiTag("{{ entity_name | string.split "." | array.last | pluralize | string.downcase }}")]
+{{ end }}
+{{ if parameters.size > 0 }}
+public async Task<ActionResult<PagedResult<{{ entity_name }}>>> {{ action_name }}(
+    int pageNumber, int pageSize, string searchString = null, string orderBy = null,
+    {{- for param in parameters -}}
+        {{ param.type }} {{ param.name | string.downcase }} = default{{for.last ? "" : ","}}
+    {{~ end ~}})
+{{ else }}
+public async Task<ActionResult<PagedResult<{{ entity_name }}>>> {{ action_name }}(
+    int pageNumber, int pageSize, string searchString = null, string orderBy = null)
+{{ end }}
+{
+    var query = new {{ request_name }}(pageNumber, pageSize, searchString, orderBy);
+{{ for param in parameters }}
+    query.{{ param.name }} = {{ param.name | string.downcase }};
+{{~ end ~}}
+    return this.Ok((await this.requestMediator.Send(query).AnyContext()).Result);
+}

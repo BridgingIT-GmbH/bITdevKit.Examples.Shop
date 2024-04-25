@@ -1,0 +1,81 @@
+# @base_url = https://dev-app-bitbaukasten-shop-f5mkmnwyfpojw.azurewebsites.net
+@base_url = https://localhost:5001
+
+############################################################################
+### IDENTITY - acquire auth token
+# @name auth
+@access_token = {{auth.response.body.$.value.token}}
+@refresh_token = {{auth.response.body.$.value.refreshToken}}
+
+POST {{base_url}}/api/identity/tokens HTTP/1.1
+Content-Type: application/json
+
+{
+    "email": "admin@acmeshop.com",
+    "password": "Fidespic032"
+}
+
+############################################################################
+### CATALOG - find all products
+GET {{base_url}}/api/catalog/products?searchString=Pr HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+############################################################################
+### CATALOG - find one product
+GET {{base_url}}/api/catalog/products/fd52219c-8e81-4920-9ffe-47f4d412d8a1 HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+############################################################################
+### CATALOG - create new product
+# @name create_product
+# @product_id = {{create_product.response.body.$.value.entityId}}
+@product_id = {{create_product.response.headers.X-Entity-Id}}
+
+POST {{base_url}}/api/catalog/products HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "name": "Product{{$randomInt 100 999}}",
+    "barcode": "ABC-abc-{{$randomInt 1000 9999}}",
+    "brandId": "ac51c174-e416-4313-9785-02b9a3117e01",
+    "typeId": "fea89522-888d-4e50-8381-3b7f550dfc01",
+    "price": 1.99,
+    "SKU": "SKU{{$randomInt 10000000 99999999}}"
+}
+
+############################################################################
+### CATALOG - update existing product
+PUT {{base_url}}/api/catalog/products/{{product_id}} HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "id": "{{product_id}}",
+    "name": "Product{{$randomInt 100 999}} UPDATED",
+    "barcode": "ABC-abc-{{$randomInt 1000 9999}}",
+    "brandId": "ac51c174-e416-4313-9785-02b9a3117e01",
+    "typeId": "fea89522-888d-4e50-8381-3b7f550dfc01",
+    "price": 3.99,
+    "SKU": "SKU{{$randomInt 10000000 99999999}}"
+}
+
+############################################################################
+### CATALOG - delete existing product
+DELETE {{base_url}}/api/catalog/products/{{product_id}} HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+############################################################################
+### CATALOG - ODATA get all products
+GET {{base_url}}/api/catalog/odata/products HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+############################################################################
+### CATALOG - ODATA get all products projected
+GET {{base_url}}/api/catalog/odata/products?$select=Name,Sku HTTP/1.1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json

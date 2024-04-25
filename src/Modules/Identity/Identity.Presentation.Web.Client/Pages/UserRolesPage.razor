@@ -1,0 +1,45 @@
+﻿@page "/identity/user-roles/{Id}"
+@attribute [Authorize(Policy = IdentityPermissions.Roles.View)]
+@inject IStringLocalizer<UserRolesPage> localizer
+@using Microsoft.AspNetCore.Components
+
+<AppPageTitle Title="@Title" Description="@Description" />
+@if (!loaded)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudTable @bind-userRole="model" Elevation="25" Items="UserRolesList" Hover="appConfiguration.TableHover" Dense="appConfiguration.TableDense" Bordered="appConfiguration.TableBordered" Striped="appConfiguration.TableStriped" Filter="new Func<Modules.Identity.Presentation.Web.Client.UserRoleModel, bool>(Search)">
+        <ToolBarContent>
+            <div class="justify-center mud-text-align-center">
+                @if (canEditUsers)
+                {
+                    <MudButton Variant="Variant.Filled" Color="Color.Success" Class="ml-auto" OnClick="SaveAsync" ButtonType="ButtonType.Submit">@localizer["Update User Roles"]</MudButton>
+                }
+            </div>
+            <MudSpacer />
+            @if (canSearchRoles)
+            {
+                <MudTextField @bind-Value="searchString" Immediate="true" FullWidth=false Placeholder="@localizer["Search For User Roles"]" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0 mb-3"></MudTextField>
+            }
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<Identity.Presentation.Web.Client.UserRoleModel, object>(x => x.RoleName)">@localizer["Role Name"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Identity.Presentation.Web.Client.UserRoleModel, object>(x => x.RoleDescription)">@localizer["Description"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Identity.Presentation.Web.Client.UserRoleModel, object>(x => x.Selected)">@localizer["Status"]</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="@localizer["Role Name"]">
+                <MudHighlighter Text="@context.RoleName" HighlightedText="@searchString" />
+            </MudTd>
+            <MudTd DataLabel="@localizer["Description"]">
+                <MudHighlighter Text="@context.RoleDescription" HighlightedText="@searchString" />
+            </MudTd>
+            <MudTd DataLabel="Role"><MudCheckBox @bind-Checked="@context.Selected" Disabled="@(!canEditUsers)" Color="Color.Secondary"></MudCheckBox></MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <TablePager />
+        </PagerContent>
+    </MudTable>
+}

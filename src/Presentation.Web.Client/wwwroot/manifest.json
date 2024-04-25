@@ -1,0 +1,21 @@
+{
+  "name": "BridgingIT DevKit - Shop",
+  "short_name": "BridgingIT DevKit - Shop",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3187E3",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "logo.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "logo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.activeBorder": "#b8c3e6",
+        "activityBar.activeBackground": "#4a9534",
+        "activityBar.background": "#4a9534",
+        "activityBar.foreground": "#e7e7e7",
+        "activityBar.inactiveForeground": "#e7e7e799",
+        "activityBarBadge.background": "#b8c3e6",
+        "activityBarBadge.foreground": "#15202b",
+        "commandCenter.border": "#e7e7e799",
+        "sash.hoverBorder": "#4a9534",
+        "statusBar.background": "#376f27",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#4a9534",
+        "statusBarItem.remoteBackground": "#376f27",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "titleBar.activeBackground": "#376f27",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveBackground": "#376f2799",
+        "titleBar.inactiveForeground": "#e7e7e799"
+    },
+    "peacock.color": "#376f27",
+    "yaml.schemas": {
+        "https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json": [
+            "file:///c%3A/_projects/bit/Bit.Baukasten.Ddd.Examples.Shop/.azure/pipelines/templates/deploy.yml",
+            "file:///c%3A/_projects/bit/Bit.Baukasten.Ddd.Examples.Shop/.azure/pipelines/templates/build.yml",
+            "file:///c%3A/_projects/bit/Bit.Baukasten.Ddd.Examples.Shop/.azure/pipelines/templates/test.yml",
+            "file:///c%3A/_projects/bit/Bit.Baukasten.Ddd.Examples.Shop/.azure/pipelines/pipeline.yml",
+            "file:///c%3A/_projects/bit/Bit.Baukasten.Ddd.Examples.Shop/.azure/pipelines/templates/version.yml"
+        ]
+    },
+    "dotnet.defaultSolution": "Bit.Baukasten.Ddd.Examples.Shop.sln"
+}

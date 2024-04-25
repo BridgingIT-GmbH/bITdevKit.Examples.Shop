@@ -1,0 +1,61 @@
+@page "/authentication/{action}"
+@attribute [AllowAnonymous]
+
+@inject IStringLocalizer<Authentication> localizer
+
+<RemoteAuthenticatorView Action="@Action">
+    <LogOutSucceeded>
+        <MudItem Class="d-flex justify-center">
+            <MudText Typo="Typo.h5" GutterBottom="true">
+                @localizer["You were successfully logged out."]
+            </MudText>
+        </MudItem>
+        <MudItem Class="d-flex justify-center">
+            <MudButton OnClick="GoHome" Color="Color.Primary" Size="Size.Large">
+                @localizer["Click here to log back in"].
+            </MudButton>
+        </MudItem>
+    </LogOutSucceeded>
+    <LoggingIn>
+        <span>@localizer["Logging in..."]</span>
+    </LoggingIn>
+    <CompletingLoggingIn>
+        <span>@localizer["Checking permissions..."]</span>
+    </CompletingLoggingIn>
+    <LogInFailed>
+        @if (!string.IsNullOrWhiteSpace(Message))
+        {
+            <MudItem Class="d-flex justify-center">
+                <MudText Typo="Typo.h5" GutterBottom="true">
+                    @localizer["Sorry, your login failed. Please try again or contact support."]
+                </MudText>
+            </MudItem>
+            <MudItem Class="d-flex justify-center">
+                @Message
+            </MudItem>
+        }
+    </LogInFailed>
+    <LogOut>
+        <span>@localizer["Logging out..."]</span>
+    </LogOut>
+    <CompletingLogOut>
+        <span>@localizer["Logging out..."]</span>
+        <Modules.Identity.Presentation.Web.Client.Pages.LoginPage RedirectUrl="/" />
+    </CompletingLogOut>
+    <LogOutFailed>
+        <span>@localizer["Sorry, log out operation failed. Please try again or contact support."]</span>
+    </LogOutFailed>
+    <UserProfile>
+        <span>@localizer["Retrieving profile..."]</span>
+    </UserProfile>
+    <Registering>
+        <span>@localizer["Registering account..."]</span>
+    </Registering>
+</RemoteAuthenticatorView>
+
+@code {
+    [Parameter] public string Action { get; set; }
+    [Parameter, SupplyParameterFromQuery(Name = "message")] public string Message { get; set; }
+
+    private void GoHome() => this.navManager.NavigateTo("/");
+}

@@ -1,0 +1,16 @@
+@base_url = https://dev-app-bitbaukasten-shop-f5mkmnwyfpojw.azurewebsites.net
+# @base_url = https://localhost:5001
+
+############################################################################
+### IDENTITY - acquire auth token
+# @name auth
+@access_token = {{auth.response.body.$.value.token}}
+@refresh_token = {{auth.response.body.$.value.refreshToken}}
+
+POST {{base_url}}/api/identity/tokens HTTP/1.1
+Content-Type: application/json
+
+{
+    "email": "admin@acmeshop.com",
+    "password": "Fidespic032"
+}

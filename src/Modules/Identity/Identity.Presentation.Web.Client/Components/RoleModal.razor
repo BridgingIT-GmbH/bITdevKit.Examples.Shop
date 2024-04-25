@@ -1,0 +1,41 @@
+﻿@inject IStringLocalizer<RoleModal> localizer
+
+<ErrorBoundary @ref="errorBoundary">
+    <ChildContent>
+        <EditForm Model="@Model" OnValidSubmit="SaveAsync">
+            <FluentValidationValidator @ref="modelValidator" Options="@(options => options.IncludeAllRuleSets())" />
+            <MudDialog>
+                <TitleContent>
+                    @{
+                        if (Model.Id == null)
+                        {
+                            <MudText Typo="Typo.h6">
+                                <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3 mb-n1" />
+                                @localizer["Add Role"]
+                            </MudText>
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.h6">
+                                <MudIcon Icon="@Icons.Material.Filled.Update" Class="mr-3 mb-n1" />
+                                @localizer["Update Role"]
+                            </MudText>
+                        }
+                    }
+                </TitleContent>
+                <DialogContent>
+                    <MudTextField For="@(() => Model.Id)" @bind-Value="Model.Id" Label="@localizer["Role ID"]" Disabled />
+                    <MudTextField For="@(() => Model.Name)" @bind-Value="Model.Name" Label="@localizer["Role Name"]" />
+                    <MudTextField For="@(() => Model.Description)" @bind-Value="Model.Description" Label="@localizer["Description"]" />
+                </DialogContent>
+                <DialogActions>
+                    <MudButton Variant="Variant.Filled" OnClick="Cancel">@localizer["Cancel"]</MudButton>
+                    <MudButton Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Success">@localizer["Save Role"]</MudButton>
+                </DialogActions>
+            </MudDialog>
+        </EditForm>
+     </ChildContent>
+     <ErrorContent>
+         <MudAlert Severity="Severity.Error" ShowCloseIcon="true" CloseIconClicked="CloseError" Variant="Variant.Outlined" ContentAlignment="HorizontalAlignment.Center">Sorry about that, something seems to have gone wrong.</MudAlert>
+     </ErrorContent>
+ </ErrorBoundary>

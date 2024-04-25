@@ -1,0 +1,88 @@
+﻿@page "/identity/users"
+@attribute [Authorize(Policy = IdentityPermissions.Users.View)]
+@inject IStringLocalizer<UsersPage> localizer
+
+<style>
+    .mud-table-container {
+        overflow: auto;
+    }
+</style>
+
+<AppPageTitle Title="@localizer["Users"]" Description="@localizer["Manage Users"]" />
+
+@if (!loaded)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudTable @bind-user="model" Elevation="25" Items="userList" Hover="appConfiguration.TableHover" Dense="appConfiguration.TableDense" Bordered="appConfiguration.TableBordered" Striped="appConfiguration.TableStriped" Filter="new Func<UserResponseModel, bool>(Search)">
+        <ToolBarContent>
+            <div class="justify-center mud-text-align-center">
+                @if (canCreateUsers)
+                {
+                    <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Primary" OnClick="(() => InvokeModal())" StartIcon="@Icons.Material.Filled.Add" IconColor="Color.Surface">@localizer["Register New User"]</MudButton>
+                    <MudButton DisableElevation Variant="Variant.Filled" OnClick="LoadData" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Secondary">@localizer["Reload"]</MudButton>
+                    @if (canExportUsers)
+                    {
+                        <MudButton DisableElevation Variant="Variant.Filled" OnClick="ExportToExcel" StartIcon="@Icons.Custom.FileFormats.FileExcel" IconColor="Color.Secondary" Color="Color.Surface" Style="margin-left: 5px;">@localizer["Export"]</MudButton>
+                    }
+                }
+                else
+                {
+                    <MudButton DisableElevation Variant="Variant.Filled" OnClick="LoadData" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Secondary">@localizer["Reload"]</MudButton>
+                    @if (canExportUsers)
+                    {
+                        <MudButton DisableElevation Variant="Variant.Filled" OnClick="ExportToExcel" StartIcon="@Icons.Custom.FileFormats.FileExcel" IconColor="Color.Secondary" Color="Color.Surface" Style="margin-left: 5px;">@localizer["Export"]</MudButton>
+                    }
+                }
+            </div>
+            <MudSpacer />
+            @if (canSearchUsers)
+            {
+                <MudTextField @bind-Value="searchString" Immediate="true" FullWidth=false Placeholder="@localizer["Search For Users"]" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0 mb-3"></MudTextField>
+            }
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<UserResponseModel, object>(x => x.FirstName)" InitialDirection="SortDirection.Ascending">@localizer["First Name"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<UserResponseModel, object>(x => x.LastName)">@localizer["Last Name"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<UserResponseModel, object>(x => x.UserName)">@localizer["UserName"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<UserResponseModel, object>(x => x.Email)">@localizer["Email"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<UserResponseModel, object>(x => x.PhoneNumber)">@localizer["PhoneNumber"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<UserResponseModel, object>(x => x.EmailConfirmed)">@localizer["Email Confirmation"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<UserResponseModel, object>(x => x.IsActive)">@localizer["Active"]</MudTableSortLabel></MudTh>
+            <MudTh Style="text-align:right">@localizer["Actions"]</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="FirstName">
+                <MudHighlighter Text="@context.FirstName" HighlightedText="@searchString" />
+            </MudTd>
+            <MudTd DataLabel="LastName">
+                <MudHighlighter Text="@context.LastName" HighlightedText="@searchString" />
+            </MudTd>
+            <MudTd DataLabel="UserName">
+                <MudHighlighter Text="@context.UserName" HighlightedText="@searchString" />
+            </MudTd>
+            <MudTd DataLabel="Email">
+                <MudHighlighter Text="@context.Email" HighlightedText="@searchString" />
+            </MudTd>
+            <MudTd DataLabel="PhoneNumber">
+                <MudHighlighter Text="@context.PhoneNumber" HighlightedText="@searchString" />
+            </MudTd>
+            <MudTd DataLabel="EmailConfirmed"><MudCheckBox @bind-Checked="@context.EmailConfirmed" ReadOnly Color="Color.Secondary"></MudCheckBox></MudTd>
+            <MudTd DataLabel="Active"><MudCheckBox @bind-Checked="@context.IsActive" ReadOnly Color="Color.Secondary"></MudCheckBox></MudTd>
+            <MudTd DataLabel="Actions" Style="text-align:right">
+                 <MudMenu Label="@localizer["Actions"]" Variant="Variant.Filled" DisableElevation="true" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" IconColor="Color.Secondary" TransformOrigin="Origin.TopCenter">
+                    <MudMenuItem OnClick="(() => ViewProfile(context.Id))">@localizer["View Profile"]</MudMenuItem>
+                    @if (canViewRoles)
+                    {
+                        <MudMenuItem OnClick="(() => ManageRoles(context.Id))">@localizer["Manage Roles"]</MudMenuItem>
+                    }
+                </MudMenu>
+            </MudTd>
+        </RowTemplate>
+         <PagerContent>
+            <TablePager />
+        </PagerContent>
+    </MudTable>
+}

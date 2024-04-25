@@ -1,0 +1,84 @@
+﻿@page "/user-profile/{Id}"
+@inject IStringLocalizer<UserProfilePage> localizer
+
+<AppPageTitle Title="@Title" Description="@Description" />
+@if (!loaded)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudGrid>
+        <AuthorizeView Roles="@RoleConstants.AdministratorRole">
+            <MudItem xs="12" sm="12" md="12">
+                <MudCard Elevation="25">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.body1">@localizer["Administrator Settings."]</MudText>
+                            <MudText Typo="Typo.body2">@localizer["This is an Administrator Only View."]</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent Class="pa-46" Style="padding:26px!important">
+                        <MudGrid>
+                            <MudItem xs="12" Class="d-flex py-2 px-1">
+                                <MudCheckBox @bind-Checked="@active" Label="@localizer["Active?"]" Class="pa-2 ml-2 mr-auto" Color="Color.Primary"></MudCheckBox>
+                                <MudButtonGroup OverrideStyles="false" Class="pa-2 mx-2">
+                                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ToggleUserStatus" ButtonType="ButtonType.Button">@localizer["Save Changes"]</MudButton>
+                                    <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="Delete" ButtonType="ButtonType.Button">@localizer["Delete account"]</MudButton>
+                                </MudButtonGroup>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </AuthorizeView>
+        <MudItem xs="12" sm="4" md="3">
+            <MudCard Elevation="25">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText>@localizer["Profile"]</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <div class="d-flex justify-center mb-4">
+                        @if (!string.IsNullOrEmpty(@ImageDataUrl))
+                        {
+                            <MudAvatar Image="@ImageDataUrl" Style="height:250px; width:250px;"> </MudAvatar>
+                        }
+                        else
+                        {
+                            <MudAvatar Color="Color.Secondary" Style="height:250px; width:250px;">@firstLetterOfName</MudAvatar>
+                        }
+                    </div>
+                    <MudText Typo="Typo.h6" Align="Align.Center">@firstName @lastName</MudText>
+                    <MudText Align="Align.Center">@email</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="8" md="9">
+            <MudCard Elevation="25">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText>@localizer["Public Profile"]</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudGrid>
+                        <MudItem xs="12" md="6">
+                            <MudField Label="@localizer["First Name"]" Variant="Variant.Text">@firstName</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudField Label="@localizer["Last Name"]" Variant="Variant.Text">@lastName</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudField Label="@localizer["Phone Number"]" Variant="Variant.Text">@phoneNumber</MudField>
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudField Label="@localizer["Email"]" Variant="Variant.Text">@email</MudField>
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+}

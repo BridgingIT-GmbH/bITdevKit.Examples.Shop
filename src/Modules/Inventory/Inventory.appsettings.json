@@ -1,0 +1,9 @@
+{
+  "Modules": {
+    "Inventory": {
+      "ConnectionStrings": {
+        "LiteDb": "Filename=data_inventory.db;Connection=shared"
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+﻿{{- for method in methods }}
+	{{ if method.comment }}
+		/// <summary>
+		/// {{ method.comment }}
+		/// </summary>
+	{{ end }}
+	{{ controller.name | method_body method templates }}
+{{ end }}

@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <ModuleName>Ordering</ModuleName>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Modules.$(ModuleName).Presentation.Web.Client</AssemblyName>
+    <RootNamespace>Modules.$(ModuleName).Presentation.Web.Client</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!--<Nullable>enable</Nullable>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NSwag.MSBuild">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Common.Presentation.Web.Client\Common.Presentation.Web.Client.csproj" />
+    <ProjectReference Include="..\..\..\Common\Common.SignalR.Client\Common.SignalR.Client.csproj" />
+    <ProjectReference Include="..\..\..\Presentation.Web.Shared\Presentation.Web.Shared.csproj" />
+  </ItemGroup>
+
+  <!-- NSwag tool API Client generation (openapi2csclient) -->
+  <PropertyGroup>
+    <ApiSpecGenerate>true</ApiSpecGenerate> <!--$(BuildingInsideVisualStudio)-->
+    <ApiSpecName>$(ModuleName)-OpenAPI</ApiSpecName>
+    <ApiSpecLocation>../$(ApiSpecName).yaml</ApiSpecLocation>
+    <ApiClientClassName>$(ModuleName)ApiClient</ApiClientClassName>
+    <ApiClientNamespace>Modules.$(ModuleName).Presentation.Web.Client</ApiClientNamespace>
+    <ApiClientOutputDirectory>./</ApiClientOutputDirectory>
+  </PropertyGroup>
+  <Target Name="GenerateApiClient" BeforeTargets="CoreCompile" Inputs="$(ApiSpecLocation)" Outputs="$(ApiClientOutputDirectory)\$(ApiClientClassName).cs" Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
+    <Exec Command="$(NSwagExe) openapi2csclient /input:$(ApiSpecLocation) /classname:$(ApiClientClassName) /namespace:$(ApiClientNamespace) /output:$(ApiClientOutputDirectory)\$(ApiClientClassName).cs /GenerateClientInterfaces:true /ExceptionClass:ApiException /OperationGenerationMode:SingleClientFromOperationId /ClassStyle:Poco /JsonLibrary:SystemTextJson /ArrayType:System.Collections.Generic.IEnumerable /UseBaseUrl:False" ConsoleToMSBuild="true" ContinueOnError="WarnAndContinue">
+      <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfExec" />
+    </Exec>
+  </Target>
+  <Target Name="CleanApiClient" AfterTargets="CoreClean" Condition="'$(ApiSpecGenerate)' == 'true'">
+    <!--<Delete Files="$(ApiClientOutputDirectory)\$(ApiClientClassName).cs"></Delete>-->
+  </Target>
+
+</Project>

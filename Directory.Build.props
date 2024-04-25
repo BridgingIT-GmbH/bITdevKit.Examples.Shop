@@ -1,0 +1,61 @@
+<Project>
+
+  <PropertyGroup>
+    <LangVersion>10.0</LangVersion>
+    <!--package-->
+    <Authors>bIT</Authors>
+    <Description>BridgingIT DevKit</Description>
+    <Copyright>Copyright 2024 (c) bridgingIT. All rights reserved.</Copyright>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</SourceRevisionId>
+    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+    <!-- <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile> -->  <!--https://learn.microsoft.com/en-us/azure/devops/pipelines/artifacts/caching-nuget?view=azure-devops#lock-dependencies-->
+    <!-- <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder> -->
+    <MinVerDefaultPreReleaseIdentifiers>preview.0</MinVerDefaultPreReleaseIdentifiers>
+  </PropertyGroup>
+
+  <!-- Temporary RouteHandlerAnalyzer fix https://github.com/dotnet/aspnetcore/issues/50836 -->
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);AD0001</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors>true</WarningsAsErrors>
+    <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
+    <!--<UseSharedCompilation>true</UseSharedCompilation>--> <!--roslyn build speed-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="System" />
+    <Using Include="System.ComponentModel" />
+    <Using Include="System.Collections.Generic" />
+    <Using Include="System.Text" />
+    <Using Include="System.Threading" />
+    <Using Include="System.Threading.Tasks" />
+    <Using Include="System.Linq" />
+    <Using Include="EnsureThat" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(MSBuildProjectExtension)' != '.dcproj'">
+    <!--<PackageReference Include="BridgingIT.DevKit.Common.Modules" />-->
+    <PackageReference Include="Ensure.That" />
+    <PackageReference Include="MinVer" PrivateAssets="All" />
+    <!--<PackageReference Include="Microsoft.CodeAnalysis.CSharp">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="StyleCop.Analyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>-->
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net7.0' And $(AssemblyName.Contains('Common.')) == 'false'">
+    <!--Allows the module name to be used in code by leveraging the ModuleName.Attribute-->
+    <AssemblyAttribute Include="BridgingIT.DevKit.Common.ModuleName.Attribute">
+      <_Parameter1>"$(ModuleName)"</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+</Project>

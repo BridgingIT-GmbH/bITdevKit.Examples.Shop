@@ -1,0 +1,87 @@
+﻿@page "/identity/roles"
+@attribute [Authorize(Policy = IdentityPermissions.Roles.View)]
+@inject IStringLocalizer<RolesPage> localizer
+@using System.ComponentModel.Design
+
+<style>
+    .mud-table-container {
+        overflow: auto;
+    }
+</style>
+
+<AppPageTitle Title="@localizer["Roles"]" Description="@localizer["Manage Roles."]" />
+@if (!loaded)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudTable @bind-role="model" Elevation="25" Items="roleList" Hover="appConfiguration.TableHover" Dense="appConfiguration.TableDense" Bordered="appConfiguration.TableBordered" Striped="appConfiguration.TableStriped" Filter="new Func<RoleResponseModel, bool>(Search)">
+        <ToolBarContent>
+            <div class="justify-center mud-text-align-center">
+                @if (canCreateRoles)
+                {
+                    <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Primary" OnClick="(() => InvokeModal())" StartIcon="@Icons.Material.Filled.Add" IconColor="Color.Surface">@localizer["Create"]</MudButton>
+                    <MudButton DisableElevation Variant="Variant.Filled" OnClick="GetRolesAsync" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Secondary">@localizer["Reload"]</MudButton>
+                }
+                else
+                {
+                    <MudButton DisableElevation Variant="Variant.Filled" OnClick="GetRolesAsync" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Secondary">@localizer["Reload"]</MudButton>
+                }
+            </div>
+            <MudSpacer />
+            @if (canSearchRoles)
+            {
+                <MudTextField @bind-Value="searchString" Immediate="true" Placeholder="@localizer["Search for Roles"]" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0 mb-3"></MudTextField>
+            }
+        </ToolBarContent>
+        <HeaderContent>
+            @*<MudTh><MudTableSortLabel SortBy="new Func<RoleResponse, object>(x => x.Id)">@localizer["Id"]</MudTableSortLabel></MudTh>*@
+            <MudTh><MudTableSortLabel SortBy="new Func<RoleResponseModel, object>(x => x.Name)" InitialDirection="SortDirection.Ascending">@localizer["Role"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<RoleResponseModel, object>(x => x.Description)">@localizer["Description"]</MudTableSortLabel></MudTh>
+            <MudTh Style="text-align:right">@localizer["Actions"]</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            @*<MudTd DataLabel="Id">@context.Id</MudTd>*@
+            <MudTd DataLabel="@localizer["Role"]">
+                <MudHighlighter Text="@context.Name" HighlightedText="@searchString" />
+            </MudTd>
+            <MudTd DataLabel="@localizer["Description"]">
+                <MudHighlighter Text="@context.Description" HighlightedText="@searchString" />
+            </MudTd>
+            <MudTd DataLabel="@localizer["Actions"]" Style="text-align: right">
+                @if (canViewRoleClaims || canEditRoles || canDeleteRoles)
+                    {
+                    <MudMenu Label="@localizer["Actions"]" Variant="Variant.Filled" DisableElevation="true" EndIcon="@Icons.Material.Filled.KeyboardArrowDown" IconColor="Color.Secondary" TransformOrigin="Origin.TopLeft">
+                        @if (canViewRoleClaims)
+                            {
+                            <MudMenuItem @onclick="@(() => ManagePermissions(@context.Id))">@localizer["Manage Permission"]</MudMenuItem>
+                            }
+                        @if (canEditRoles)
+                            {
+                            <MudMenuItem @onclick="@(() => InvokeModal(@context.Id))">@localizer["Edit"]</MudMenuItem>
+                            }
+                        @if (canDeleteRoles)
+                            {
+                            <MudMenuItem @onclick="@(() => Delete(@context.Id))">@localizer["Delete"]</MudMenuItem>
+                            }
+                    </MudMenu>
+                    }
+                    else
+                    {
+                    <MudButton Variant="Variant.Filled"
+                               DisableElevation="true"
+                               StartIcon="@Icons.Material.Filled.DoNotTouch"
+                               IconColor="Color.Secondary"
+                               Size="Size.Small"
+                               Color="Color.Surface">
+                        @localizer["No Allowed Actions"]
+                    </MudButton>
+                    }
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <TablePager />
+        </PagerContent>
+    </MudTable>
+}
